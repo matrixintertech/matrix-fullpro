@@ -1,8 +1,11 @@
 const { MongoClient } = require("mongodb");
 
-const uri = "mongodb://MatrixAdmin:MatrixAdminPass001@13.201.165.17:27017/matrix?authSource=admin";
+const uri = process.env.MONGO_URI;
 
 async function main() {
+  if (!uri) {
+    throw new Error("Missing MONGO_URI. Set it in your environment before running this script.");
+  }
   const client = new MongoClient(uri);
   await client.connect();
   const db = client.db("matrix");
