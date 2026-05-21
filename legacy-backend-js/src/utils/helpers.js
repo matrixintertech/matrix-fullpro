@@ -198,12 +198,12 @@ const sendEmail = async ({
     // });
 
     // const transporter = nodemailer.createTransport({
-    //   host: "email-smtp.ap-south-1.amazonaws.com", // Explicitly define host
+    //   host: "email-smtp.ap-south-1.amazonaws.com",
     //   port: 465,
     //   secure: true,
     //   auth: {
-    //     user: "AKIA5JMSUGZGOFYQ2RER",
-    //     pass: "BCn6O28MKTKJ7mg0EBYCyaoIOOj9lX3sD1xlUqJm9yT5", // âš ï¸ Store this securely (Use environment variables)
+    //     user: "<REDACTED_AWS_SMTP_USER>",
+    //     pass: "<REDACTED_AWS_SMTP_PASS>",
     //   },
     // });
 
@@ -230,24 +230,32 @@ const sendEmail = async ({
     //     accessToken,
     //   },
     // });
-    var transporter = nodemailer.createTransport({
+    const mailUser = process.env.MAIL_USER;
+    const mailPass = process.env.MAIL_PASS;
+    const mailFrom = process.env.MAIL_FROM || "Matrix Intertech <no-reply@example.com>";
+
+    if (!mailUser || !mailPass) {
+      throw new Error("MAIL_USER and MAIL_PASS must be set in environment variables");
+    }
+
+    const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: "mi2005.delhi@gmail.com",
-        pass: "ynayahwumnvdzxce",
+        user: mailUser,
+        pass: mailPass,
       },
     });
     // var transporter = nodemailer.createTransport({
     //   service: "gmail",
     //   auth: {
-    //     user: "phonologixdeveloper@gmail.com",
-    //     pass: "qltfqjevclinudxs",
+    //     user: "<REDACTED_MAIL_USER>",
+    //     pass: "<REDACTED_MAIL_PASS>",
     //   },
     // });
 
-    var mailOptions = {
+    const mailOptions = {
       // from: "support",
-      from: "Matrix Intertech <mi2005.delhi@gmail.com>",
+      from: mailFrom,
       to: recipientEmail,
       cc: ccEmails,
       subject,
