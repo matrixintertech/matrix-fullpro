@@ -1,0 +1,141 @@
+.sidebar {
+  width: 315px;
+  background-color: white;
+  height: 100%;
+  position: fixed;
+  border-right: 1px solid rgba(192, 192, 192, 1);
+  
+  
+}
+
+.logo {
+  width: 255px;
+  height: 102px;
+  padding-top: 24px;
+  padding-left: 24px;
+  gap: 0px;
+  opacity: 0px;
+
+}
+
+.logo img {
+
+  width: 255px;
+  height: 102px;
+}
+
+.menu {
+  width: Fixed (273px)px;
+height: Fixed (48px)px;
+top: 251px;
+left: 24px;
+padding: 12px 20px 12px 20px;
+gap: 0px;
+border-radius: 8px 0px 0px 0px;
+justify-content: space-between;
+opacity: 0px;
+
+
+}
+
+.menu h3 {
+  color: #666;
+  font-size: 12px;
+  margin: 20px 0 10px;
+  font-weight: 600;
+}
+
+.menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  left: 24px;
+  justify-content: space-between;
+}
+
+.menu li {
+
+  margin: 5px 0;
+ 
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  color: #666;
+  transition: all 0.3s ease;
+  height: 48px;
+  width: 273px;
+  left: 24px;
+
+  
+ 
+
+}
+.menu ul li {
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px; /* Set font height */
+  font-weight: 400; /* Set font weight */
+  line-height: 24px;
+  align-items: center;
+  
+ 
+ 
+
+}
+
+.menu li:hover {
+  background-color: #f0f0f0;
+}
+
+.menu li.active {
+  background: linear-gradient(180deg, #BFBFF1 0%, #B033EE 100%);
+
+  color: white;
+}
+
+.icon {
+  margin-right: 10px;
+  width: 24px;
+  height: 24px;
+ padding-left: 12px;
+  opacity: 0px;
+  
+
+
+}
+
+.vector-list-services {
+  width: 24px;
+  height: 24px;
+  top: 0.72px;
+  left: 0.72px;
+  gap: 0px;
+  opacity: 0px;
+
+}
+
+
+.listServices {
+  width: Hug (131px)px;
+height: Hug (24px)px;
+gap: 8px;
+opacity: 0px;
+
+}
+
+.addServiceRequest {
+  width: Hug (196px)px;
+height: Hug (24px)px;
+gap: 8px;
+opacity: 0px;
+
+}
+
+.hdfcLudhiana  {
+  width: 162px; /* Fixed the incorrect syntax */
+  height: 24px;
+  gap: 8px;
+  opacity: 1;
+  
+  
+}
+

@@ -1,0 +1,215 @@
+/* Base container styles */
+.taskDetailContainer {
+  padding-left: 22rem;
+  padding-top: 27px;
+  padding-right: 30px;
+  width: 100%;
+  min-height: 600px;
+}
+
+.taskDetailContent {
+  width: 100%;
+  height: 587px;
+  max-width: 1063px;
+}
+
+/* Header Section */
+.taskDetailHeader {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.backButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  color: #333;
+  cursor: pointer;
+  font-size: 1.1em;
+  padding: 8px;
+  transition: color 0.2s ease;
+}
+
+.backButton:hover {
+  color: #6a0dad;
+}
+
+.backButton span {
+  font-family: var(--font-family-primary);
+}
+
+/* Section Title */
+.sectionTitle {
+  display: flex;
+  gap: 25px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.sectionTitle h2 {
+  margin: 10px;
+  font-family: var(--font-family-primary);
+  font-weight: 600;
+  font-size: 28px;
+  width: 80px;
+  height: 42px;
+  line-height: 42px;
+}
+
+.sectionTitle p {
+  color: #6a0dad;
+  width: 338px;
+  height: 27px;
+  font-weight: 400;
+  font-family: var(--font-family-primary);
+  font-size: 18px;
+  line-height: 27px;
+}
+
+.sectionTitle span {
+  font-family: var(--font-family-primary);
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 27px;
+  color: rgba(0, 0, 0, 1);
+}
+
+/* Table Container */
+.tableContainer {
+  border: 1px solid rgba(208, 208, 208, 1);
+
+  overflow: hidden;
+}
+
+/* DataGrid Customization */
+.gridHeader {
+  background: rgba(218, 218, 241, 1) !important;
+  color: black !important;
+   
+  font-size: 14px !important;
+  font-family: var(--font-family-primary) !important;
+  
+}
+
+/* DataGrid Cell Styles */
+.tableContainer {
+  /* border: 1px solid rgba(208, 208, 208, 1); */
+  
+  overflow: hidden;
+}
+
+.tableContainer :global(.MuiDataGrid-root) {
+  border: none;
+}
+
+.tableContainer :global(.MuiDataGrid-columnHeaders) {
+  background-color: #6a0dad;
+  color: black;
+  font-weight: bold;
+}
+
+.tableContainer :global(.MuiDataGrid-columnHeaderTitle) {
+
+  color: black;
+  font-family: var(--font-family-primary);
+font-size: 20;
+font-weight: 600;
+line-height: 24px;
+
+
+}
+
+.tableContainer :global(.MuiDataGrid-cell) {
+  /* border-bottom: 1px solid rgba(208, 208, 208, 1); */
+  padding: 0 16px;
+}
+
+/* Action Button Styles */
+.actionButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: rgba(35, 35, 35, 1);
+  padding: 6px;
+  /* border-radius: 4px; */
+  transition: all 0.2s ease;
+}
+
+.actionButton:hover {
+  background-color: rgba(106, 13, 173, 0.1);
+  color: purple;
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+}
+
+/* Numeric Cell Alignment */
+.numericCell {
+  text-align: right !important;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .taskDetailContainer {
+    padding-left: 16rem;
+  }
+}
+
+@media (max-width: 992px) {
+  .taskDetailContainer {
+    padding-left: 12rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .taskDetailContainer {
+    padding: 1rem;
+  }
+
+  .backButton {
+    font-size: 0.875rem;
+  }
+
+  .sectionTitle {
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .sectionTitle p {
+    width: 100%;
+  }
+}
+
+/* Loading and Error States */
+.loadingState,
+.errorState {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 400px;
+  width: 100%;
+  font-family: var(--font-family-primary);
+  color: #666;
+}
+
+/* Empty State */
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 400px;
+  width: 100%;
+  color: #666;
+  font-family: var(--font-family-primary);
+}
+

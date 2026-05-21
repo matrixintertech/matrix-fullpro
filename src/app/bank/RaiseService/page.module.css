@@ -1,0 +1,236 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+
+}
+
+.content {
+  border-radius: 8px;
+  width: 100%;
+  padding-left: 22.5rem;
+  padding-right: 2rem;
+
+}
+
+.heading {
+  font-size: 28px;
+  font-weight: 600;
+  font-family: var(--font-family-primary);
+  margin-bottom: 0;
+  align-items: flex-start;
+  text-align: left;
+  padding-top: 25px;
+  line-height: 42px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+
+ 
+
+}
+
+.label {
+  font-weight: 500;
+  padding-top: 10px;
+  font-family: var(--font-family-primary);
+
+  
+}
+
+.input,
+.select,
+.textarea {
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.textarea {
+
+  resize: vertical;
+  
+
+}
+
+.parentContainer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.multiSelect {
+  background: linear-gradient(180deg, #BFBFF1 0%, #B033EE 100%);
+  -webkit-background-clip: text;
+  color: transparent; /* Makes the background gradient visible through the text */
+  font-weight: 400;
+  cursor: pointer;
+  font-family: var(--font-family-primary);
+  font-size: 16px;
+  width: 116px;
+  height: 24px;
+  line-height: 24px;
+  text-align: right;
+  /* padding-right: 20px; */
+  width: 1031px;
+}
+
+
+.photoUpload {
+  width: 272px;
+  height: 200px;
+
+  gap: 14px;
+  border-radius: 4px 0px 0px 0px;
+  border: 1px 0px 0px 0px;
+  opacity: 0px;
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  
+  border: 1px solid rgba(208, 208, 208, 1);
+  cursor: pointer;
+
+}
+
+.photoUpload span {
+  text-align: center;
+}
+
+
+.photoPreviewContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+ 
+  margin-top: 0;
+}
+
+.photoPreview img {
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+  
+}
+
+
+.buttonContainer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.submitBtn {
+  background: linear-gradient(180deg, #BFBFF1 0%, #B033EE 100%);
+
+  color: #fff;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.submitBtn:hover {
+  background: linear-gradient(180deg, #BFBFF1 0%, #B033EE 100%);
+
+}
+
+.titleInput {
+  height: 46px;
+  font-family: var(--font-family-primary);
+  padding-top: 10px;
+  width: 1031px;
+  
+}
+
+.serviceTypeSelect {
+  height: 46px;
+  font-family: var(--font-family-primary);
+  width: 1031px;
+}
+
+.descriptionTextarea {
+  height: 143px;
+  font-family: var(--font-family-primary);
+  width: 1031px;
+}
+
+.add-before-text{
+  width: 246px;
+  height: 30px;
+  font-weight: 400;
+  font-family: var(--font-family-primary);
+  font-size: 20px;
+  line-height: 30px;
+  color:  rgba(96, 96, 96, 1);
+  padding-top:0px;
+
+}
+
+.description-input{
+  padding-top: 15px;
+  
+}
+
+.photoUploadGroup{
+  padding-top: 35px;
+}
+
+.addMultipleText {
+  color: rgba(176, 51, 238, 1);
+  font: var(--font-family-primary);
+ font-size: 14px;
+ line-height: 21px;
+  font-weight: 400;
+  width: 146px;
+  height: 21px;
+}
+
+/* Targeting the placeholder text in the title input */
+.titleInput::placeholder {
+  font-size: 20px;
+  color: rgba(96, 96, 96, 1);
+  font-weight: 500; /* Correct the unit here from '500px' to '500' */
+  font-family: var(--font-family-primary);
+  /* line-height: 30px; 
+  padding-top: 5px;
+  padding-bottom: 5px; */
+  text-align: left; /* Ensure text is left-aligned horizontally */
+}
+/* Targeting the placeholder text in the service type select */
+.serviceTypeSelect {
+  font-size: 20px; /* Change this to your desired font size */
+  font-family: var(--font-family-primary); /* Ensure the font family is consistent */
+  color: rgba(96, 96, 96, 1); /* Change color if needed */
+  line-height: 30px;
+  padding-top: 5px; /* Add padding to adjust vertical alignment */
+  padding-bottom: 5px; /* Optional: Fine-tune this to align the placeholder */
+
+}
+
+
+/* Targeting the placeholder text in the description textarea */
+.descriptionTextarea::placeholder {
+  font-size: 20px;
+  color:  rgba(96, 96, 96, 1);
+  font-weight: 500px;
+  font-family: var(--font-family-primary);
+  line-height: 30px;
+  padding-top: 5px; /* Add padding to adjust vertical alignment */
+  padding-bottom: 5px; /* Optional: Fine-tune this to align the placeholder */
+
+
+}

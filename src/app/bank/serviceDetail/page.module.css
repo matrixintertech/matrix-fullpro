@@ -1,0 +1,242 @@
+.serviceContainer {
+    background-color: white;
+    border-radius: 8px;
+    padding-left: 22rem;
+    padding-top: 27px;
+    padding-right: 30px;
+    width: 100%;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+  }
+  
+  .title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+  }
+  
+  .buttonGroup {
+    display: flex;
+    gap: 16px;
+  }
+  
+  .beforeImageBtn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #F3E8FF;
+    color: #9333EA;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+  }
+  
+  .discussionBtn {
+    border: 1px solid #9333EA;
+    color: #9333EA;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+  }
+  
+  .content {
+    display: flex;
+    gap: 48px;
+  }
+  
+  .timeline {
+    flex: 1;
+    padding-right: 24px;
+  }
+  
+  .timelineItem {
+    display: flex;
+    margin-bottom: 32px;
+    position: relative;
+  }
+  
+  .connector {
+    position: absolute;
+    left: 15px;
+    top: 30px;
+    width: 2px;
+    height: calc(100% + 16px);
+    background-color: #E5E7EB;
+  }
+  
+  .connectorActive {
+    background-color: #10B981;
+  }
+  
+  .statusCircle {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 16px;
+    z-index: 1;
+    border: 2px solid transparent;
+  }
+  
+  .statusCircleCompleted {
+    background-color: #10B981;
+    color: white;
+  }
+  
+  .statusCirclePending {
+    background-color: #F3F4F6;
+    border-color: #E5E7EB;
+  }
+  
+  .itemContent {
+    flex: 1;
+    padding-top: 4px;
+  }
+  
+  .itemTitle {
+    font-weight: 500;
+    color: #111827;
+    margin-bottom: 4px;
+  }
+  
+  .itemDescription {
+    font-size: 14px;
+    color: #6B7280;
+    margin-bottom: 12px;
+    font-style: italic;
+  }
+  
+  .actionButton {
+    background-color: #A855F7;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .actionButton:hover {
+    background-color: #9333EA;
+  }
+  
+  .illustration {
+    width: 400px;
+    padding: 16px;
+  }
+  
+  .illustration img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+  }
+  /* Modal Overlay */
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  /* Modal Content */
+  .modalContent {
+    background-color: white;
+    border-radius: 8px;
+    padding: 24px;
+    width: 80%;
+    max-width: 900px;
+    position: relative;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Modal Header */
+  .modalHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  
+  .modalTitle {
+    font-size: 20px;
+    font-weight: 600;
+    color: #111827;
+  }
+  
+  .closeButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #6B7280;
+  }
+  
+  .closeButton:hover {
+    color: #111827;
+  }
+  
+  /* Image Grid */
+  .imageGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+  }
+  
+  /* Image Wrapper */
+  .imageWrapper {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  /* Grid Image */
+  .gridImage {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
+  
+  /* Ensures horizontal scrolling on the x-axis */
+
+  /* Container for vertical scrolling */
+.scrollableYContainer {
+  max-height: 600px;
+  overflow-y: auto;
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+  width: 100%;
+  /* height: 100%; */
+  padding-right: 10px; /* Add padding to avoid scrollbar overlap */
+}
+
+/* Optional styling for the timeline items */
+.timelineItem {
+  margin-bottom: 20px; 
+}
+
+@media (max-height: 1023px) {
+  .scrollableYContainer {
+    max-height: 600px; /* Set a specific height for scrollable area */
+    overflow-y: auto;
+  }
+}
+@media (min-height: 1024px) {
+  .scrollableYContainer {
+    max-height:100%; /* Set a specific height for scrollable area */
+    overflow-y: auto;
+  }
+}

@@ -1,0 +1,205 @@
+.center-container {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+
+.otp-verification-part {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    
+    background-color: white;
+}
+
+
+.logo-container {
+    text-align: center;
+    margin-bottom: 0px; /* Reduce the gap between logo and h2 */
+}
+
+.logo-image {
+    width: 225px;
+    height: 102px;
+    margin-bottom: 0px; 
+}
+
+.logo-container h2 {
+    /* font-weight: normal; */
+    
+    margin-top: 0;
+    height: 48px;
+    width: 255px;
+   
+   
+    line-height: 48px;
+}
+
+.verification-container {
+    width: 100%;
+    max-width: 600px;
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 1.5rem;
+}
+
+.otp-head {
+    padding-top: 30px;
+    font-size: 24px;
+    color: (35,35,35,1);
+    font-weight: 700;
+    margin: 0;
+    font-family: 'Inter', sans-serif; 
+    padding-bottom: 25px;
+    line-height: 29.05px;
+    width: 234px;
+    height: 29px;
+    
+}
+
+.timer-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding-top: 30px;
+}
+
+.time-left {
+    color: (35,35,35,1);
+    font-size:16px;
+    font-family: 'Poppins', sans-serif; width: 69px;
+    height: 24px;
+    line-height: 24px;
+    font-size: 16px;
+    font-weight: 400px;
+
+
+
+}
+
+.timer-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 4px solid #B8B5FF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    color: #666;
+}
+.enter-otp-text {
+    color: (35,35,35,1);
+    font-size: 16px;
+    font-weight: 500; /* Corrected from 700px to 700 */
+    line-height: 19.36px;
+    width: 538px;
+    height: 19px;
+    padding-bottom: 35px;
+    font-family: 'Inter', sans-serif; 
+}
+
+
+.otp-input-container {
+    display: flex;
+    gap:60px;
+    margin-bottom: 1.5rem;
+    width: 100%;
+    height: 48px;
+    border-radius: 8px;
+    border: 1px;
+    justify-content: space-between;
+
+}
+
+.otp-input {
+    width: 48px;
+    height: 48px;
+    border: 1px solid #E5E7EB;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 1.25rem;
+    background: #FFFFFF;
+    flex: 1;
+}
+
+.otp-input:focus {
+    border-color: #B8B5FF;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(184, 181, 255, 0.2);
+}
+
+.resend-button {
+    color: #6366F1;
+    background: none;
+    border: none;
+    font-size: 16px;
+    margin-bottom: 1.5rem;
+    cursor: pointer;
+    display: block;
+    margin-left: auto;
+    padding: 0;
+    font-family: 'Poppins', sans-serif; 
+    margin-bottom: 3.2rem;
+    line-height: 24px;
+    font-weight: 400;
+}
+
+.resend-button:disabled {
+    color: #A1A1AA;
+    cursor: not-allowed;
+}
+
+.login-button {
+    background: linear-gradient(92.33deg, #BFBFF1 30.36%, #B033EE 110.72%);
+
+    color: white;
+    border: none;
+    border-radius: 4px;
+    
+    width: 100%;
+    font-size: 16px;
+    height: 52px;
+    line-height: 24px;
+    font-weight: 700;
+    gap: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    height: 52px;
+    font-family: 'Poppins', sans-serif; 
+}
+
+.login-button:hover {
+    background-color: #A5A1FF;
+}
+
+@media (max-width: 768px) {
+    .centerContainer {
+        flex-direction: column;
+    }
+
+    .gradientContainer,
+    .Otp_Verfication_side {
+        flex: none;
+    }
+
+    .Otp_Verfication_side {
+        padding: 2rem;
+    }
+
+    .loginImage {
+        width: 300px;
+    }
+}

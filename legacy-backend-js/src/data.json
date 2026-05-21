@@ -1,0 +1,37 @@
+[
+  {
+    "name": "matrix_user",
+    "permissions": {
+      "ClientUser": {
+        "isRead": false,
+        "isWrite": false,
+        "isDelete": false
+      },
+      "User": {
+        "isRead": false,
+        "isWrite": false,
+        "isDelete": false
+      },
+      "Category": {
+        "isRead": false,
+        "isWrite": false,
+        "isDelete": false
+      },
+      "Rc": {
+        "isRead": false,
+        "isWrite": false,
+        "isDelete": false
+      },
+      "Client": {
+        "isRead": false,
+        "isWrite": false,
+        "isDelete": false
+      },
+      "Inventory": {
+        "isRead": true,
+        "isWrite": true,
+        "isDelete": true
+      }
+    }
+  }
+]

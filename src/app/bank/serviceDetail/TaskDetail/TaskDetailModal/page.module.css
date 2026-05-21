@@ -1,0 +1,102 @@
+.modalOverlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+  }
+  
+  .modalContainer {
+    background-color: white;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 64rem;
+    padding: 1.5rem;
+    position: relative;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  
+  .closeButton {
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+    padding: 0.25rem;
+    border-radius: 9999px;
+    color: #6b7280;
+    transition: background-color 0.2s;
+  }
+  
+  .closeButton:hover {
+    background-color: #f3f4f6;
+  }
+  
+  .modalTitle {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    padding-right: 2rem;
+  }
+  
+  .imageGrid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+  }
+  
+  .imageContainer {
+    position: relative;
+    aspect-ratio: 1;
+  }
+  
+  .image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 0.5rem;
+  }
+  
+  .detailsSection {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e5e7eb;
+  }
+  
+  .detailsTitle {
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+  
+  .detailsGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+  
+  .detailItem {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  
+  .detailLabel {
+    color: #6b7280;
+    font-size: 0.875rem;
+  }
+  
+  .detailValue {
+    font-weight: 500;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .imageGrid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  
+    .detailsGrid {
+      grid-template-columns: 1fr;
+    }
+  }

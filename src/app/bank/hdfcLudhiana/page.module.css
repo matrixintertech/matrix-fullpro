@@ -1,0 +1,175 @@
+.container {
+    min-height: 100vh;
+    padding-top: 27px;
+    padding-left: 20rem;
+    padding-bottom: 20px;
+    
+
+  }
+  
+  .card {
+   
+   
+    background: white;
+   
+  
+  }
+  
+  .cardContent {
+    padding: 24px;
+  }
+  
+  .title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 40px;
+  }
+  
+  .hierarchyContainer {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    /* min-height: 600px; */
+    /* overflow-x: auto; */
+  }
+  
+  .node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+  }
+  
+  .nodeWrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* padding: 8px 16px; */
+   
+    border-radius: 8px;
+   
+    /* min-width: 160px; */
+    z-index: 1;
+  }
+  
+  .avatarContainer {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 8px;
+    background: white;
+  }
+  
+  .avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .nodeTitle {
+    color: #333;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: center;
+    white-space: nowrap;
+  }
+  
+  /* Vertical connecting lines */
+  .verticalLine {
+    width: 2px;
+    height: 40px;
+    background-color: #d1d1d1;
+    margin-top: 10px;
+  }
+  
+  /* Container for child nodes */
+  .childrenContainer {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    padding-top: 20px;
+    gap: 30px;
+  }
+  
+  /* Horizontal connecting lines for multiple children */
+  .childrenContainer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 2px;
+    background-color: #d1d1d1;
+    width: calc(100% - 60px);
+  }
+  
+  /* Only show horizontal line when there are multiple children */
+  .childrenContainer:has(> .node:only-child)::before {
+    display: none;
+  }
+  
+  /* Draw horizontal lines between siblings */
+  .childrenContainer > .node {
+    position: relative;
+  }
+  
+  /* Connect siblings with horizontal lines */
+  .childrenContainer > .node:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: -20px;
+    right: -15px;
+    width: 30px;
+    height: 2px;
+    background-color: #d1d1d1;
+  }
+  
+  /* Draw vertical lines to children */
+  .childrenContainer > .node::before {
+    content: '';
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2px;
+    height: 20px;
+    background-color: #d1d1d1;
+  }
+  
+  /* Ensure nodes are above lines */
+  .nodeWrapper {
+    position: relative;
+    z-index: 2;
+    background-color: inherit;
+  }
+  
+  /* Handle color inheritance */
+  .hierarchyContainer > .node > .nodeWrapper .nodeTitle {
+    color: white;
+  }
+  
+  /* Media query for responsiveness */
+  @media (max-width: 1200px) {
+    .hierarchyContainer {
+      padding: 10px;
+      overflow-x: auto;
+    }
+  
+    .nodeWrapper {
+      /* min-width: 140px; */
+      margin: 0 10px;
+    }
+  
+    .childrenContainer {
+      gap: 20px;
+    }
+  }
+  
+  /* Fix spacing for deep nested levels */
+  .childrenContainer .childrenContainer {
+    margin-top: -10px;
+  }

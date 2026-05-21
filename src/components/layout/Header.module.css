@@ -1,0 +1,16 @@
+.header {
+    padding-top: 60px;
+    padding-left: 342px;
+    /* background-color: white; */
+    /* border-bottom: 1px solid #eee; */
+   
+  }
+  
+  .header h1 {
+    font-size: 28px;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+    left: 342px;
+  }
+  

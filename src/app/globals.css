@@ -1,0 +1,76 @@
+/* global.css */
+
+/* theme.css or globals.css */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Inter:wght@400;700&display=swap');
+
+/* Other global styles */
+:root {
+    --global-gradient: linear-gradient(333.09deg, #B852EA -9.03%, #BFBFF1 77.58%);
+    --font-family-primary: 'Poppins', sans-serif;
+    --font-family-secondary: 'Inter', sans-serif;
+}
+
+body {
+    font-family: var(--font-family-primary);
+}
+
+@import './themes.css';
+
+
+/* Other global styles */
+
+
+/* Apply a box-sizing rule to all elements */
+*, *::before, *::after {
+  box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+
+/* Reset body and html to remove default margin and padding */
+html, body {
+  margin: 0; /* Remove default margin */
+  padding: 0; /* Remove default padding */
+  height: 100%; /* Ensure body and html take full height */
+  width: 100%; /* Ensure body and html take full width */
+  overflow: hidden; /* Prevent any overflow if needed */
+}
+
+/* Optional: Set a default font and background color */
+body {
+  font-family: Arial, sans-serif; /* Default font */
+  background-color: #f0f0f0; /* Optional background color */
+}
+
+
+/*gradient container for login page */
+
+/* globals.css */
+
+/* Global Gradient Variable */
+:root {
+  --global-gradient: linear-gradient(333.09deg, #B852EA -9.03%, #BFBFF1 77.58%);
+}
+
+/* Global gradient container */
+.gradientContainer {
+  width: 50%;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--global-gradient);
+}
+
+/* Global image wrapper */
+.imageWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Global login image styling */
+.loginImage {
+  max-width: 100%;
+  width: 500px;
+  height: 500px;
+  border-radius: 24px;
+}

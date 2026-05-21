@@ -1,0 +1,1081 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ServicePartnerStatus {
+  APPROVED
+  REJECTED
+  PENDING
+}
+
+enum UserType {
+  ADMIN
+  SERVICE_PARTNER_USER
+}
+
+enum ClientUserType {
+  ADMIN
+  CLIENT_USER
+}
+
+enum ServiceWorkflowStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  REVISE
+  UPDATED
+  ASSIGNED
+  COMPLETED
+  APPROVAL_PENDING
+  WORK_IN_PROGRESS
+}
+
+enum TaskStatus {
+  YET_TO_START
+  IN_PROGRESS
+  COMPLETED
+}
+
+enum PaymentStatus {
+  REQUESTED
+  APPROVED
+  REJECTED
+  PAID
+  SUBMITTED
+}
+
+enum SupplierType {
+  SUPPLIER
+  CONTRACTOR
+}
+
+enum LegalStatus {
+  SOLE_PROPRIETORSHIP
+  PRIVATE_LIMITED
+  PUBLIC_LIMITED
+  PARTNERSHIP
+  LLP
+}
+
+enum DealingIn {
+  PLUMBING
+  ELECTRICIAN
+  CARPENTER
+  OTHER
+}
+
+enum InventoryRecordType {
+  INVENTORY_IN
+  INVENTORY_OUT
+}
+
+enum InventoryTxnType {
+  PURCHASE
+  RETURN
+  ISSUED
+}
+
+enum InventoryRequestStatus {
+  PENDING
+  FULFILLED
+  REJECTED
+}
+
+enum ApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum InvoicePaidStatus {
+  PENDING
+  PAID
+}
+
+enum RfqStatus {
+  DRAFT
+  SENT
+  RESPONDED
+  APPROVED
+  ACCEPTED
+  REJECTED
+}
+
+enum RfqVendorStatus {
+  PENDING
+  VIEWED
+  RESPONDED
+  APPROVED
+  ACCEPTED
+  REJECTED
+}
+
+enum VendorDocumentType {
+  AADHAAR
+  PAN
+  GST
+  LICENSE
+  REGISTRATION_CERTIFICATE
+}
+
+model ServicePartner {
+  id        String               @id @default(cuid())
+  companyName String             @map("company_name")
+  name      String
+  email     String               @unique
+  mobile    String               @unique
+  city      String
+  state     String
+  address   String?
+  status    ServicePartnerStatus @default(PENDING)
+  createdAt DateTime             @default(now())
+  updatedAt DateTime             @updatedAt
+
+  users             User[]
+  roles             Role[]
+  categories        Category[]
+  items             Item[]
+  clients           ClientServicePartner[]
+  serviceRequests   ServiceRequest[]
+  inventoryRequests InventoryRequest[]
+  inventories       Inventory[]
+  payments          Payment[]
+  expenses          Expense[]
+  rfqs              Rfq[]
+  rcs               Rc[]
+  suppliers         Supplier[]
+  purchaseOrders    PurchaseOrder[]
+
+  @@map("service_partners")
+}
+
+model Client {
+  id            String   @id @default(cuid())
+  clientName    String   @unique @map("client_name")
+  code          String   @unique
+  clientAddress String?  @map("client_address")
+  email         String   @unique
+  mobile        String   @unique
+  city          String
+  state         String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  branches            Branch[]
+  clientUsers         ClientUser[]
+  serviceRequests     ServiceRequest[]
+  servicePartnerLinks ClientServicePartner[]
+  rcs                 Rc[]
+
+  @@index([code])
+  @@map("clients")
+}
+
+model Branch {
+  id        String   @id @default(cuid())
+  name      String
+  address   String?
+  city      String
+  state     String
+  clientId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  client          Client           @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  serviceRequests ServiceRequest[]
+
+  @@index([clientId])
+  @@map("branches")
+}
+
+model Role {
+  id               String   @id @default(cuid())
+  name             String
+  permissions      String[] @default([])
+  servicePartnerId String
+
+  servicePartner ServicePartner @relation(fields: [servicePartnerId], references: [id], onDelete: Cascade)
+  users          User[]
+
+  @@index([servicePartnerId])
+  @@unique([servicePartnerId, name])
+  @@map("roles")
+}
+
+model User {
+  id               String   @id @default(cuid())
+  name             String
+  email            String   @unique
+  mobile           String   @unique
+  roleId           String?
+  profileImage     String?
+  servicePartnerId String
+  userType         UserType @map("userType")
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  role                      Role?                   @relation(fields: [roleId], references: [id])
+  servicePartner            ServicePartner          @relation(fields: [servicePartnerId], references: [id], onDelete: Cascade)
+  createdServiceRequests    ServiceRequest[]        @relation("CreatedByServicePartnerUser")
+  pmAssignedRequests        ServiceRequest[]        @relation("PmAssignedUser")
+  smAssignedRequests        ServiceRequest[]        @relation("SmAssignedUser")
+  assignedServiceRequests   ServiceRequest[]        @relation("ServiceRequestUsers")
+  teamMemberServiceRequests ServiceRequest[]        @relation("ServiceRequestTeamMembers")
+  taskCreated               Task[]                  @relation("TaskCreatedBy")
+  taskAssigned              Task[]                  @relation("TaskAssignedTo")
+  taskLogsUpdated           TaskLog[]               @relation("TaskLogUpdatedBy")
+  timeLogs                  TimeLog[]
+  inventoryReceived         Inventory[]             @relation("InventoryReceivedBy")
+  inventoryPerson           Inventory[]             @relation("InventoryPerson")
+  paymentsRequested         Payment[]               @relation("PaymentRequestedBy")
+  paymentsApproved          Payment[]               @relation("PaymentApprovedBy")
+  paymentsMarkedPaid        Payment[]               @relation("PaymentMarkedPaidBy")
+  expensesRequested         Expense[]               @relation("ExpenseRequestedBy")
+  expensesActioned          Expense[]               @relation("ExpenseActionTakenBy")
+  vendorPaymentsRequested   VendorPayment[]         @relation("VendorPaymentRequestedBy")
+  vendorPaymentsApproved    VendorPayment[]         @relation("VendorPaymentApprovedBy")
+  vendorPaymentsMarkedPaid  VendorPayment[]         @relation("VendorPaymentMarkedPaidBy")
+  approvedSuppliers         Supplier[]              @relation("SupplierApprovedBy")
+  referredSuppliers         Supplier[]              @relation("SupplierReferredBy")
+  purchaseOrdersCreated     PurchaseOrder[]         @relation("PurchaseOrderCreatedBy")
+  rfqsCreated               Rfq[]                   @relation("RfqCreatedByServicePartnerUser")
+  quotationsCreated         Quotation[]             @relation("QuotationCreatedBy")
+  serviceTargetStatusLogs   ServiceTargetStatusLog[]
+  requestedInventoryRequests InventoryRequest[]     @relation("InventoryRequestedBy")
+
+  @@index([servicePartnerId])
+  @@index([roleId])
+  @@map("users")
+}
+
+model ClientUser {
+  id            String         @id @default(cuid())
+  name          String
+  email         String         @unique
+  mobile        String         @unique
+  userType      ClientUserType @map("user_type")
+  designation   String?
+  profileImage  String?
+  reportingToId String?        @map("reporting_to")
+  clientId      String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  reportingTo     ClientUser?      @relation("ClientUserReporting", fields: [reportingToId], references: [id])
+  directReports   ClientUser[]     @relation("ClientUserReporting")
+  client          Client?          @relation(fields: [clientId], references: [id])
+  serviceRequests ServiceRequest[] @relation("ServiceRequestClientUser")
+  createdRequests ServiceRequest[] @relation("CreatedByClientUser")
+
+  @@index([clientId])
+  @@index([reportingToId])
+  @@map("client_users")
+}
+
+model ClientServicePartner {
+  id               String   @id @default(cuid())
+  clientId         String
+  servicePartnerId String
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  client         Client         @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  servicePartner ServicePartner @relation(fields: [servicePartnerId], references: [id], onDelete: Cascade)
+
+  @@unique([clientId, servicePartnerId])
+  @@index([servicePartnerId])
+  @@map("client_service_partners")
+}
+
+model Category {
+  id               String   @id @default(cuid())
+  categoryName     String   @map("category_name")
+  description      String?
+  servicePartnerId String
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  servicePartner ServicePartner @relation(fields: [servicePartnerId], references: [id], onDelete: Cascade)
+
+  @@unique([servicePartnerId, categoryName])
+  @@index([servicePartnerId])
+  @@map("categories")
+}
+
+model Supplier {
+  id               String       @id @default(cuid())
+  type             SupplierType?
+  name             String
+  email            String?      @unique
+  mobile           String?      @unique
+  supplierCode     String?      @unique @map("supplier_code")
+  gstNumber        String?      @map("gst_number")
+  contactName      String?      @map("contact_name")
+  ifscCode         String?      @map("ifsc_code")
+  state            String?
+  city             String?
+  address          String?
+  documents        Json?
+  servicePartnerId String?
+  isVendor         Boolean      @default(true)
+  isVerified       Boolean      @default(false)
+  legalStatus      LegalStatus?
+  profileImage     String?
+  companyName      String?
+  approvedById     String?
+  referredById     String?      @map("refferredBy")
+  bankName         String?      @map("bank_name")
+  accountNumber    String?      @map("account_number")
+  dealingIn        DealingIn[]
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  servicePartner ServicePartner? @relation(fields: [servicePartnerId], references: [id])
+  approvedBy     User?           @relation("SupplierApprovedBy", fields: [approvedById], references: [id])
+  referredBy     User?           @relation("SupplierReferredBy", fields: [referredById], references: [id])
+  expenses       Expense[]
+  purchaseOrders PurchaseOrder[]
+  inventoryBills Inventory[]
+  vendorPayments VendorPayment[]
+  rfqAssignments RfqAssignedVendor[]
+  invoices       Invoice[]
+  pos            Po[]
+
+  @@index([servicePartnerId])
+  @@index([approvedById])
+  @@map("suppliers")
+}
+
+model Vendor {
+  id            String             @id @default(cuid())
+  email         String             @unique
+  mobile        String             @unique
+  isVendor      Boolean            @default(true)
+  isVerified    Boolean            @default(false)
+  profileImage  String?
+  country       String?
+  companyName   String?
+  address       String?
+  type          String?
+  legalStatus   LegalStatus?
+  contactPerson String?
+  dealingIn     DealingIn[]
+  documentsType VendorDocumentType?
+  documentLinks String[]           @default([]) @map("documentLink")
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+
+  @@map("vendors")
+}
+
+model Item {
+  id                    String   @id @default(cuid())
+  servicePartnerId      String
+  itemName              String
+  additionalDescription String?  @map("additional_description")
+  category              String?
+  hsnCode               String?
+  gstPercentage         Float?
+  unit                  String?
+  remarks               String?
+  inventoryType         String?
+  qty                   Float?
+  usedQty               Float    @default(0) @map("usedqty")
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  servicePartner        ServicePartner          @relation(fields: [servicePartnerId], references: [id], onDelete: Cascade)
+  rcItems               Rc[]
+  quotationNonRcItems   QuotationNonRcItem[]
+  inventoryItems        InventoryItem[]
+  inventoryRequestItems InventoryRequestItem[]
+  invoiceEntryItems     InvoiceEntryItem[]
+  rfqVendorItems        RfqAssignedVendorItem[]
+  assignServiceItems    AssignServiceInventory[]
+
+  @@index([servicePartnerId])
+  @@map("items")
+}
+
+model Rc {
+  id               String   @id @default(cuid())
+  rcNumber         String   @unique @map("rc_number")
+  inventoryId      String?  @map("inventory_id")
+  finishedGoods    String?  @map("finished_goods")
+  rate             Float
+  gstPercentage    Float
+  unit             String
+  clientId         String?
+  servicePartnerId String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  inventoryItem    Item?           @relation(fields: [inventoryId], references: [id])
+  client           Client?         @relation(fields: [clientId], references: [id])
+  servicePartner   ServicePartner? @relation(fields: [servicePartnerId], references: [id])
+  quotationRcItems QuotationRcItem[]
+
+  @@index([clientId])
+  @@index([servicePartnerId])
+  @@index([inventoryId])
+  @@map("rcs")
+}
+
+model ServiceRequest {
+  id                            String                @id @default(cuid())
+  clientId                      String?
+  clientUserId                  String?
+  callReferenceNumber           String?               @map("call_reference_number")
+  servicePartnerId              String?
+  createdByServicePartnerUserId String?               @map("createdByservicePartnerUserId")
+  createdByClientUserId         String?               @map("createdByclientUserId")
+  title                         String
+  costName                      String?               @map("cost_name")
+  description                   String?
+  serviceNumber                 String                @unique
+  serviceType                   String
+  beforeImages                  Json?
+  afterImages                   Json?
+  pmAssignedId                  String?               @map("pmAssigned")
+  pmAssignedStatus              ServiceWorkflowStatus @default(PENDING)
+  smAssignedId                  String?               @map("smAssigned")
+  smAssignedStatus              ServiceWorkflowStatus @default(PENDING)
+  branchId                      String?               @map("branch_id")
+  quotationCreatedStatus        ServiceWorkflowStatus @default(PENDING)
+  quotationApprovalStatus       ServiceWorkflowStatus @default(PENDING)
+  callDateTime                  DateTime?             @map("call_date_time")
+  quotationUpdatedAt            DateTime?
+  taskCompletionStatus          ServiceWorkflowStatus @default(PENDING)
+  serviceCreatedDate            DateTime?
+  approveQuotationDate          DateTime?
+  serviceRequestedDate          DateTime?
+  createdAt                     DateTime              @default(now())
+  updatedAt                     DateTime              @updatedAt
+
+  client                      Client?                 @relation(fields: [clientId], references: [id])
+  clientUser                  ClientUser?             @relation("ServiceRequestClientUser", fields: [clientUserId], references: [id])
+  servicePartner              ServicePartner?         @relation(fields: [servicePartnerId], references: [id])
+  createdByServicePartnerUser User?                   @relation("CreatedByServicePartnerUser", fields: [createdByServicePartnerUserId], references: [id])
+  createdByClientUser         ClientUser?             @relation("CreatedByClientUser", fields: [createdByClientUserId], references: [id])
+  pmAssigned                  User?                   @relation("PmAssignedUser", fields: [pmAssignedId], references: [id])
+  smAssigned                  User?                   @relation("SmAssignedUser", fields: [smAssignedId], references: [id])
+  branch                      Branch?                 @relation(fields: [branchId], references: [id])
+  users                       User[]                  @relation("ServiceRequestUsers")
+  teamMembers                 User[]                  @relation("ServiceRequestTeamMembers")
+  serviceTargetStatusLogs     ServiceTargetStatusLog[]
+  tasks                       Task[]
+  timeLogs                    TimeLog[]
+  payments                    Payment[]
+  expenses                    Expense[]
+  inventoryRequests           InventoryRequest[]
+  inventories                 Inventory[]
+  assignServices              AssignService[]
+  quotations                  Quotation[]
+  purchaseOrders              PurchaseOrder[]
+  pos                         Po[]
+  rfqs                        Rfq[]
+  vendorPayments              VendorPayment[]
+
+  @@index([clientId])
+  @@index([clientUserId])
+  @@index([servicePartnerId])
+  @@index([pmAssignedId])
+  @@index([smAssignedId])
+  @@index([branchId])
+  @@map("service_requests")
+}
+
+model ServiceTargetStatusLog {
+  id                 String                @id @default(cuid())
+  serviceRequestId   String
+  status             ServiceWorkflowStatus
+  date               DateTime              @default(now())
+  remarks            String?
+  userId             String?               @map("user_id")
+  targetDate         DateTime?
+  startingTargetDate DateTime?             @map("StartingTargetDate")
+
+  serviceRequest ServiceRequest @relation(fields: [serviceRequestId], references: [id], onDelete: Cascade)
+  user           User?          @relation(fields: [userId], references: [id])
+
+  @@index([serviceRequestId, date])
+  @@index([userId])
+  @@map("service_target_status_logs")
+}
+
+model Quotation {
+  id               String   @id @default(cuid())
+  serviceRequestId String
+  quotationNumber  String   @unique
+  totalAmount      Float    @map("total_amount")
+  cgst             Float?
+  sgst             Float?
+  igst             Float?
+  createdById      String?  @map("createdBy")
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  serviceRequest ServiceRequest        @relation(fields: [serviceRequestId], references: [id], onDelete: Cascade)
+  createdBy      User?                 @relation("QuotationCreatedBy", fields: [createdById], references: [id])
+  rcItems        QuotationRcItem[]
+  nonRcItems     QuotationNonRcItem[]
+
+  @@index([serviceRequestId])
+  @@index([createdById])
+  @@map("quotations")
+}
+
+model QuotationRcItem {
+  id                    String   @id @default(cuid())
+  quotationId           String
+  rcId                  String   @map("rc_id")
+  qty                   Float
+  usedQty               Float    @default(0)
+  completionStatus      Boolean  @default(false)
+  completionDate        DateTime?
+  remarks               String?
+  rate                  Float?
+  additionalDescription String?  @map("additional_description")
+
+  quotation Quotation @relation(fields: [quotationId], references: [id], onDelete: Cascade)
+  rc        Rc        @relation(fields: [rcId], references: [id])
+
+  @@index([quotationId])
+  @@index([rcId])
+  @@map("quotation_rc_items")
+}
+
+model QuotationNonRcItem {
+  id                    String   @id @default(cuid())
+  quotationId           String
+  inventoryId           String   @map("inventory_id")
+  qty                   Float
+  usedQty               Float    @default(0)
+  completionStatus      Boolean  @default(false)
+  completionDate        DateTime?
+  rate                  Float?
+  remarks               String?
+  additionalDescription String?  @map("additional_description")
+
+  quotation Quotation @relation(fields: [quotationId], references: [id], onDelete: Cascade)
+  item      Item      @relation(fields: [inventoryId], references: [id])
+
+  @@index([quotationId])
+  @@index([inventoryId])
+  @@map("quotation_non_rc_items")
+}
+
+model Task {
+  id               String     @id @default(cuid())
+  taskId           String     @unique @map("TaskId")
+  serviceRequestId String
+  createdById      String?    @map("created_by")
+  userId           String?    @map("user_id")
+  title            String
+  fileUrl          String[]   @default([]) @map("file_url")
+  taskDate         String     @map("task_date")
+  description      String
+  status           TaskStatus @default(YET_TO_START)
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+
+  serviceRequest ServiceRequest @relation(fields: [serviceRequestId], references: [id], onDelete: Cascade)
+  createdBy      User?          @relation("TaskCreatedBy", fields: [createdById], references: [id])
+  user           User?          @relation("TaskAssignedTo", fields: [userId], references: [id])
+  logs           TaskLog[]
+  timeLogs       TimeLog[]
+
+  @@index([serviceRequestId])
+  @@index([createdById])
+  @@index([userId])
+  @@map("tasks")
+}
+
+model TaskLog {
+  id          String     @id @default(cuid())
+  taskId      String
+  status      TaskStatus @default(YET_TO_START)
+  updatedById String?    @map("updated_by")
+  timestamp   DateTime   @default(now())
+  remarks     String?
+
+  task      Task  @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  updatedBy User? @relation("TaskLogUpdatedBy", fields: [updatedById], references: [id])
+
+  @@index([taskId, timestamp])
+  @@index([updatedById])
+  @@map("task_logs")
+}
+
+model TimeLog {
+  id               String   @id @default(cuid())
+  taskId           String?  @map("task_id")
+  serviceRequestId String
+  userId           String?  @map("user_id")
+  punchInTime      DateTime
+  punchOutTime     DateTime?
+  punchInLocation  String?
+  punchOutLocation String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  task           Task?          @relation(fields: [taskId], references: [id])
+  serviceRequest ServiceRequest @relation(fields: [serviceRequestId], references: [id], onDelete: Cascade)
+  user           User?          @relation(fields: [userId], references: [id])
+
+  @@index([taskId])
+  @@index([serviceRequestId])
+  @@index([userId])
+  @@map("time_logs")
+}
+
+model Otp {
+  id          String   @id @default(cuid())
+  phoneNumber String   @unique
+  otp         String?
+  otpExpires  DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("otps")
+}
+
+model InventoryRequest {
+  id               String                 @id @default(cuid())
+  title            String?
+  description      String?
+  serviceRequestId String?
+  servicePartnerId String?
+  status           InventoryRequestStatus @default(PENDING)
+  requestedById    String?                @map("requestedBy")
+  createdAt        DateTime               @default(now())
+  updatedAt        DateTime               @updatedAt
+
+  serviceRequest ServiceRequest?       @relation(fields: [serviceRequestId], references: [id])
+  servicePartner ServicePartner?       @relation(fields: [servicePartnerId], references: [id])
+  requestedBy    User?                 @relation("InventoryRequestedBy", fields: [requestedById], references: [id])
+  items          InventoryRequestItem[]
+  inventories    Inventory[]
+
+  @@index([serviceRequestId])
+  @@index([servicePartnerId])
+  @@index([requestedById])
+  @@map("inventory_requests")
+}
+
+model InventoryRequestItem {
+  id                 String   @id @default(cuid())
+  inventoryRequestId String
+  itemId             String?  @map("item")
+  itemName           String?
+  qty                Float?
+  category           String?
+  unit               String?
+
+  inventoryRequest InventoryRequest @relation(fields: [inventoryRequestId], references: [id], onDelete: Cascade)
+  item             Item?            @relation(fields: [itemId], references: [id])
+
+  @@index([inventoryRequestId])
+  @@index([itemId])
+  @@map("inventory_request_items")
+}
+
+model Site {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  inventoryId String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  inventories Inventory[]
+
+  @@map("sites")
+}
+
+model Inventory {
+  id                 String              @id @default(cuid())
+  inventoryRequestId String?             @map("inventory_request_id")
+  servicePartnerId   String
+  recordType         InventoryRecordType? @map("record_type")
+  inventoryType      InventoryTxnType?   @map("inventory_type")
+  serviceRequestId   String?             @map("service_request")
+  receivedById       String?             @map("received_by")
+  isGodown           Boolean?            @map("is_godown")
+  billNo             String?             @map("bill_no")
+  billDate           DateTime?           @map("bill_date")
+  billAttachment     String?             @map("bill_attachment")
+  personNameId       String?             @map("person_name")
+  supplierId         String?             @map("supplier_id")
+  inventoryOutDate   DateTime?           @map("inventory_out_date")
+  siteId             String?             @map("site")
+  siteName           String?
+  outerRemarks       String?
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+
+  inventoryRequest InventoryRequest? @relation(fields: [inventoryRequestId], references: [id])
+  servicePartner   ServicePartner    @relation(fields: [servicePartnerId], references: [id], onDelete: Cascade)
+  serviceRequest   ServiceRequest?   @relation(fields: [serviceRequestId], references: [id])
+  receivedBy       User?             @relation("InventoryReceivedBy", fields: [receivedById], references: [id])
+  personName       User?             @relation("InventoryPerson", fields: [personNameId], references: [id])
+  supplier         Supplier?         @relation(fields: [supplierId], references: [id])
+  site             Site?             @relation(fields: [siteId], references: [id])
+  items            InventoryItem[]
+  vendorPayments   VendorPayment[]
+
+  @@index([inventoryRequestId])
+  @@index([servicePartnerId])
+  @@index([serviceRequestId])
+  @@index([supplierId])
+  @@index([siteId])
+  @@map("inventories")
+}
+
+model InventoryItem {
+  id          String  @id @default(cuid())
+  inventoryId String
+  itemId      String  @map("inventory_id")
+  qtyIn       Float   @default(0) @map("qty_in")
+  qtyOut      Float   @default(0) @map("qty_out")
+  rate        Float
+  remarks     String?
+
+  inventory Inventory @relation(fields: [inventoryId], references: [id], onDelete: Cascade)
+  item      Item      @relation(fields: [itemId], references: [id])
+
+  @@index([inventoryId])
+  @@index([itemId])
+  @@map("inventory_items")
+}
+
+model AssignService {
+  id        String   @id @default(cuid())
+  serviceId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  service     ServiceRequest          @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  inventories AssignServiceInventory[]
+
+  @@index([serviceId])
+  @@map("assign_services")
+}
+
+model AssignServiceInventory {
+  id               String   @id @default(cuid())
+  assignServiceId  String
+  inventoryItemId  String   @map("inventory_id")
+  qty              Float
+  usedQty          Float?
+  completionStatus Boolean  @default(false)
+  completionDate   DateTime?
+
+  assignService AssignService @relation(fields: [assignServiceId], references: [id], onDelete: Cascade)
+  item          Item          @relation(fields: [inventoryItemId], references: [id])
+
+  @@index([assignServiceId])
+  @@index([inventoryItemId])
+  @@map("assign_service_inventories")
+}
+
+model Payment {
+  id               String        @id @default(cuid())
+  servicePartnerId String?
+  serviceRequestId String
+  userId           String?       @map("user_id")
+  amount           Float
+  approvedAmount   Float?        @map("approved_amount")
+  remark           String?
+  desc             String
+  paymentStatus    PaymentStatus @default(REQUESTED)
+  approvedById     String?       @map("approved_by")
+  approvedDate     DateTime?     @map("approved_date")
+  markAsPaidById   String?       @map("mark_as_paid_by")
+  markAsPaidDate   DateTime?     @map("mark_as_paid_date")
+  paymentsRemarks  String?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  servicePartner ServicePartner? @relation(fields: [servicePartnerId], references: [id])
+  serviceRequest ServiceRequest  @relation(fields: [serviceRequestId], references: [id], onDelete: Cascade)
+  user           User?           @relation("PaymentRequestedBy", fields: [userId], references: [id])
+  approvedBy     User?           @relation("PaymentApprovedBy", fields: [approvedById], references: [id])
+  markAsPaidBy   User?           @relation("PaymentMarkedPaidBy", fields: [markAsPaidById], references: [id])
+
+  @@index([serviceRequestId])
+  @@index([servicePartnerId])
+  @@index([userId])
+  @@map("payments")
+}
+
+model Expense {
+  id               String        @id @default(cuid())
+  servicePartnerId String?
+  serviceRequestId String
+  userId           String?       @map("user_id")
+  vendorId         String?
+  billDate         DateTime?     @map("bill_date")
+  billNumber       String?       @map("bill_number")
+  amount           Float
+  approvedAmount   Float?        @map("approved_amount")
+  desc             String
+  remark           String?
+  file             Json?
+  files            String[]      @default([])
+  expenseStatus    PaymentStatus @default(REQUESTED)
+  actionTakenById  String?       @map("action_taken_by")
+  expenseId        String        @unique
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  servicePartner ServicePartner? @relation(fields: [servicePartnerId], references: [id])
+  serviceRequest ServiceRequest  @relation(fields: [serviceRequestId], references: [id], onDelete: Cascade)
+  user           User?           @relation("ExpenseRequestedBy", fields: [userId], references: [id])
+  vendor         Supplier?       @relation(fields: [vendorId], references: [id])
+  actionTakenBy  User?           @relation("ExpenseActionTakenBy", fields: [actionTakenById], references: [id])
+
+  @@index([serviceRequestId])
+  @@index([servicePartnerId])
+  @@index([vendorId])
+  @@map("expenses")
+}
+
+model PurchaseOrder {
+  id               String         @id @default(cuid())
+  poNumber         String         @unique
+  serviceRequestId String
+  servicePartnerId String?
+  totalAmount      Float
+  createdById      String
+  approvalStatus   ApprovalStatus @default(PENDING)
+  supplierId       String?
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  serviceRequest ServiceRequest  @relation(fields: [serviceRequestId], references: [id], onDelete: Cascade)
+  servicePartner ServicePartner? @relation(fields: [servicePartnerId], references: [id])
+  createdBy      User            @relation("PurchaseOrderCreatedBy", fields: [createdById], references: [id])
+  supplier       Supplier?       @relation(fields: [supplierId], references: [id])
+  items          PurchaseOrderItem[]
+
+  @@index([serviceRequestId])
+  @@index([servicePartnerId])
+  @@index([createdById])
+  @@index([supplierId])
+  @@map("purchase_orders")
+}
+
+model PurchaseOrderItem {
+  id              String @id @default(cuid())
+  purchaseOrderId String
+  desc            String
+  qty             Float
+  rate            Float
+  total           Float
+
+  purchaseOrder PurchaseOrder @relation(fields: [purchaseOrderId], references: [id], onDelete: Cascade)
+
+  @@index([purchaseOrderId])
+  @@map("purchase_order_items")
+}
+
+model Po {
+  id               String   @id @default(cuid())
+  vendorId         String?  @map("vednorId")
+  poNumber         String   @unique
+  rfqId            String?
+  serviceRequestId String?
+  billToAddress    String?
+  billToGST        String?
+  shipToAddress    String?
+  shipToGST        String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  vendor         Supplier?       @relation(fields: [vendorId], references: [id])
+  serviceRequest ServiceRequest? @relation(fields: [serviceRequestId], references: [id])
+  invoices       Invoice[]
+  vendorPayments VendorPayment[]
+  rfqs           Rfq[]           @relation("PoToRfq")
+
+  @@index([vendorId])
+  @@index([rfqId])
+  @@index([serviceRequestId])
+  @@map("pos")
+}
+
+model Rfq {
+  id                            String      @id @default(cuid())
+  title                         String
+  category                      String
+  description                   String?
+  type                          String?
+  expectedDeadline              String
+  items                         Json?
+  status                        RfqStatus   @default(DRAFT)
+  paymentTerms                  String?
+  freightExtraIsApplicable      Boolean?    @map("freightExtra_isApplicable")
+  freightExtraAmount            Float?      @map("freightExtra_amount")
+  createdByServicePartnerUserId String      @map("createdByservicePartnerUserId")
+  servicePartnerId              String
+  serviceRequestId              String
+  rfqNo                         String      @unique
+  poId                          String?
+  createdAt                     DateTime    @default(now())
+  updatedAt                     DateTime    @updatedAt
+
+  createdByServicePartnerUser User                @relation("RfqCreatedByServicePartnerUser", fields: [createdByServicePartnerUserId], references: [id])
+  servicePartner             ServicePartner      @relation(fields: [servicePartnerId], references: [id], onDelete: Cascade)
+  serviceRequest             ServiceRequest      @relation(fields: [serviceRequestId], references: [id], onDelete: Cascade)
+  po                         Po?                 @relation("PoToRfq", fields: [poId], references: [id])
+  assignedVendors            RfqAssignedVendor[]
+  invoices                   Invoice[]
+
+  @@index([servicePartnerId])
+  @@index([serviceRequestId])
+  @@index([createdByServicePartnerUserId])
+  @@index([poId])
+  @@map("rfqs")
+}
+
+model RfqAssignedVendor {
+  id                     String          @id @default(cuid())
+  rfqId                  String
+  vendorId               String
+  assignedDate           DateTime        @default(now())
+  status                 RfqVendorStatus @default(PENDING)
+  quotationAmount        Float?
+  quotationDetails       String?
+  submittedAt            DateTime?
+  vendorExpectedDeadline DateTime?
+
+  rfq    Rfq      @relation(fields: [rfqId], references: [id], onDelete: Cascade)
+  vendor Supplier @relation(fields: [vendorId], references: [id])
+  items  RfqAssignedVendorItem[]
+
+  @@index([rfqId])
+  @@index([vendorId])
+  @@unique([rfqId, vendorId])
+  @@map("rfq_assigned_vendors")
+}
+
+model RfqAssignedVendorItem {
+  id                  String  @id @default(cuid())
+  rfqAssignedVendorId String
+  itemId              String?
+  itemName            String?
+  unit                String?
+  quantity            String?
+  description         String?
+  price               String?
+  hsnCode             String?
+  gstPercentage       Float?
+
+  rfqAssignedVendor RfqAssignedVendor @relation(fields: [rfqAssignedVendorId], references: [id], onDelete: Cascade)
+  item              Item?             @relation(fields: [itemId], references: [id])
+
+  @@index([rfqAssignedVendorId])
+  @@index([itemId])
+  @@map("rfq_assigned_vendor_items")
+}
+
+model Invoice {
+  id                 String   @id @default(cuid())
+  vendorId           String?
+  poId               String?
+  rfqId              String?
+  usedQuantity       Float?
+  consumedPrice      Float?
+  actualQuantity     Float?
+  actualPrice        Float?   @map("actulPrice")
+  totalAmount        Float?
+  invoiceCount       Int      @default(0)
+  isInvoiceGenerated Boolean  @default(false)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  vendor      Supplier?      @relation(fields: [vendorId], references: [id])
+  po          Po?            @relation(fields: [poId], references: [id])
+  rfq         Rfq?           @relation(fields: [rfqId], references: [id])
+  invoiceData InvoiceEntry[]
+
+  @@index([vendorId])
+  @@index([poId])
+  @@index([rfqId])
+  @@map("invoices")
+}
+
+model InvoiceEntry {
+  id           String            @id @default(cuid())
+  invoiceId    String
+  date         DateTime?
+  isApproved   ApprovalStatus    @default(PENDING)
+  approvalDate DateTime?
+  isPaid       InvoicePaidStatus @default(PENDING)
+  attachment   String?
+
+  invoice Invoice           @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  items   InvoiceEntryItem[]
+
+  @@index([invoiceId])
+  @@map("invoice_entries")
+}
+
+model InvoiceEntryItem {
+  id            String  @id @default(cuid())
+  invoiceEntryId String
+  itemId        String?
+  hsnCode       String?
+  quantity      Float?
+  price         Float?
+  usedQuantity  Float?
+  consumedPrice Float?
+
+  invoiceEntry InvoiceEntry @relation(fields: [invoiceEntryId], references: [id], onDelete: Cascade)
+  item         Item?        @relation(fields: [itemId], references: [id])
+
+  @@index([invoiceEntryId])
+  @@index([itemId])
+  @@map("invoice_entry_items")
+}
+
+model VendorPayment {
+  id               String        @id @default(cuid())
+  vendorId         String
+  billId           String?
+  poId             String?
+  amount           Float
+  approvedAmount   Float?        @map("approved_amount")
+  attachment       String?
+  remarks          String?
+  status           PaymentStatus @default(SUBMITTED)
+  requestedById    String
+  requestedAt      DateTime      @default(now())
+  approvedById     String?       @map("approved_by")
+  approvedDate     DateTime?     @map("approved_date")
+  markAsPaidById   String?       @map("mark_as_paid_by")
+  markAsPaidDate   DateTime?     @map("mark_as_paid_date")
+  serviceRequestId String?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  vendor         Supplier        @relation(fields: [vendorId], references: [id])
+  bill           Inventory?      @relation(fields: [billId], references: [id])
+  po             Po?             @relation(fields: [poId], references: [id])
+  requestedBy    User            @relation("VendorPaymentRequestedBy", fields: [requestedById], references: [id])
+  approvedBy     User?           @relation("VendorPaymentApprovedBy", fields: [approvedById], references: [id])
+  markAsPaidBy   User?           @relation("VendorPaymentMarkedPaidBy", fields: [markAsPaidById], references: [id])
+  serviceRequest ServiceRequest? @relation(fields: [serviceRequestId], references: [id])
+
+  @@index([vendorId])
+  @@index([billId])
+  @@index([poId])
+  @@index([requestedById])
+  @@index([serviceRequestId])
+  @@map("vendor_payments")
+}

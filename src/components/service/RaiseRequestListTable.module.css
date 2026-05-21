@@ -1,0 +1,286 @@
+/* RaiseRequestListTable.module.css */
+
+.tableContainer {
+  padding: 0;
+  background-color: #ffffff;
+
+  border: 1px solid #edf2f7;
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-family: var(--font-family-primary);
+}
+
+.table th,
+.table td {
+  padding: 16px 20px;
+  text-align: left;
+  border-bottom: 1px solid #edf2f7;
+}
+
+.table th {
+  background: rgba(244, 244, 255, 1);
+
+  font-weight: 500;
+  color: #64748b;
+  font-size: 0.875rem;
+}
+
+.table td {
+  color: #1e293b;
+  font-size: 0.875rem;
+}
+
+/* ID column specific styling */
+.table td:first-child {
+  color: #94a3b8;
+}
+
+.status {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.actionButton {
+  background: none;
+  border: none;
+  padding: 8px;
+  cursor: pointer;
+  color: #94a3b8;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+}
+
+.actionButton:hover {
+  color: #475569;
+}
+
+/* Status-specific classes */
+.requestSent {
+  background-color: #dcfce7;
+  color: #15803d;
+}
+
+.workInProgress {
+  background-color: #dcfce7;
+  color: #15803d;
+}
+
+.rejected {
+  background-color: #fee2e2;
+  color: #b91c1c;
+}
+
+.revised {
+  background-color: #faf5ff;
+  color: #7e22ce;
+}
+
+/* Additional styles for the control bar */
+.controlBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  gap: 16px;
+  height: 48px;
+}
+
+.searchBox {
+  display: flex;
+  align-items: center;
+  background-color: white;
+  gap: 8px;
+  border-radius: 32px;
+  padding: 8px 24px 8px 24px;
+
+  width: 299px;
+  border: 1px solid rgba(192, 192, 192, 1);
+  height: 40px;
+}
+
+.searchBox input {
+  border: none;
+  outline: none;
+  padding-left: 8px;
+  width: 100%;
+  font-size: 0.875rem;
+
+}
+
+.searchIcon {
+  color: #94a3b8;
+}
+
+.filterContainer {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.sortButtonContainer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filterGroup {
+  display: flex;
+  gap: 8px;
+}
+
+
+.sortFilter {
+  padding: 8px 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background-color: white;
+
+
+  min-width: 150px;
+  cursor: pointer;
+  height: 40px;
+  font-weight: 600;
+  font-family: var(--font-family-primary);
+  size: 12px;
+  line-height: 18px;
+
+}
+
+.statusFilter {
+  width: 88px;
+  height: 40px;
+
+  /* gap: 8px; */
+  border-radius: 4px 0px 0px 0px;
+  border: 1px solid rgba(192, 192, 192, 1);
+
+  font-weight: 600;
+  font-family: var(--font-family-primary);
+  size: 12px;
+  line-height: 18px;
+
+}
+
+.raiseButton {
+  background: linear-gradient(180deg, #BFBFF1 0%, #B033EE 100%);
+  color: white;
+  /* padding: 8px 16px; */
+  border-radius: 4px;
+  padding-left: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  font-family: var(--font-family-primary);
+  border: none;
+  font-weight: 600;
+  line-height: 18px;
+gap: 16px;
+  width: 170px;
+  height: 40px;
+
+
+
+
+}
+
+.raiseButton:hover {
+  background-color: #9333ea;
+}
+
+.sub-heading {
+  width: 93px;
+  height: 40px;
+  padding-left: 8px;
+}
+
+.sub-heading h2 {
+  font-size: 16px;
+  width: 93px;
+  height: 24px;
+  font-family: var(--font-family-primary);
+  font-weight: 600;
+  line-height: 24px;
+
+}
+
+.customSelect {}
+
+.customDropdown {
+  position: relative;
+  display: inline-block;
+  width: 200px;
+}
+
+.dropdownHeader {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+
+  border: 1px solid rgba(192, 192, 192, 1);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.dropdownHeader span {
+  margin-left: 8px;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 18px;
+  font-family: var(--font-family-primary);
+  width: 83px;
+  height: 18px;
+}
+
+.dropdownMenu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background-color: white;
+
+  display: none;
+  flex-direction: column;
+}
+
+.dropdownItem {
+  padding: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+
+}
+
+.dropdownItem:hover {}
+
+.customDropdown:hover .dropdownMenu {
+  display: flex;
+}
+
+.dropdownItem span {
+  margin-left: 8px;
+}
+
+.raiseButton i {
+
+  font-size: 24px; /* Set the icon size (width and height) */
+  width: 24px;     /* Width of the icon */
+  height: 24px;    /* Height of the icon */
+}
+
+.page-container{
+  margin-left: 21rem;
+  padding-top: 40px;
+  padding-right: 47px;
+}
