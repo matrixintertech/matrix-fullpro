@@ -1,4 +1,5 @@
 import { authenticator } from "otplib";
+import nodemailer from "nodemailer";
 import { ApiError } from "@/lib/errors";
 import { getRequiredEnv, isProduction } from "@/lib/env";
 import { signAccessToken, type AccessTokenPayload } from "@/lib/auth";
@@ -6,6 +7,69 @@ import { prisma } from "@/server/db/prisma";
 import { findPrincipalByPhone, type AuthPrincipal } from "@/server/repositories/auth-repository";
 
 const OTP_EXPIRY_MINUTES = 30;
+const DEFAULT_MAIL_FROM = "Matrix Intertech <no-reply@example.com>";
+
+function getOtpEmailConfig() {
+  const user = process.env.MAIL_USER;
+  const pass = process.env.MAIL_PASS;
+  const from = process.env.MAIL_FROM || DEFAULT_MAIL_FROM;
+  const host = process.env.MAIL_HOST;
+  const port = process.env.MAIL_PORT ? Number(process.env.MAIL_PORT) : undefined;
+  const secure = process.env.MAIL_SECURE === "true";
+
+  if (!user || !pass) {
+    throw new ApiError(
+      "Email service is not configured. Set MAIL_USER and MAIL_PASS.",
+      500,
+      "MAIL_CONFIG_MISSING"
+    );
+  }
+
+  return { user, pass, from, host, port, secure };
+}
+
+async function sendOtpEmail(input: {
+  to: string;
+  otp: string;
+  expiresInMinutes: number;
+}) {
+  const { user, pass, from, host, port, secure } = getOtpEmailConfig();
+  const transporter = host
+    ? nodemailer.createTransport({
+        host,
+        port: port ?? 587,
+        secure: port ? secure : false,
+        auth: { user, pass },
+      })
+    : nodemailer.createTransport({
+        service: "gmail",
+        auth: { user, pass },
+      });
+
+  try {
+    await transporter.sendMail({
+      from,
+      to: input.to,
+      subject: "Your Matrix OTP Code",
+      text: `Your OTP is ${input.otp}. It will expire in ${input.expiresInMinutes} minutes.`,
+      html: `
+        <div style="font-family: Arial, sans-serif; line-height: 1.5;">
+          <h2>Matrix OTP Verification</h2>
+          <p>Your OTP is:</p>
+          <p style="font-size: 24px; font-weight: 700; letter-spacing: 4px;">${input.otp}</p>
+          <p>This code will expire in ${input.expiresInMinutes} minutes.</p>
+          <p>If you did not request this code, you can ignore this email.</p>
+        </div>
+      `,
+    });
+  } catch {
+    throw new ApiError(
+      "Failed to send OTP email. Please try again.",
+      502,
+      "OTP_EMAIL_SEND_FAILED"
+    );
+  }
+}
 
 function assertPrincipalCanLogin(principal: AuthPrincipal): void {
   if (principal.userFrom === "Supplier" && principal.isVerified === false) {
@@ -60,6 +124,20 @@ export async function sendOtp(input: { phoneNumber: string; isNew?: boolean }) {
       otpExpires,
     },
   });
+
+  if (principal?.email) {
+    await sendOtpEmail({
+      to: principal.email,
+      otp,
+      expiresInMinutes: OTP_EXPIRY_MINUTES,
+    });
+  } else if (isProduction()) {
+    throw new ApiError(
+      "No email is configured for this account. Contact admin.",
+      400,
+      "EMAIL_NOT_CONFIGURED"
+    );
+  }
 
   return {
     phoneNumber,
